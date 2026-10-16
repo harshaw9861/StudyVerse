@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudyVerse (Local Demo)</title>
+<style>
+:root{--bg:#0a1030;--b:#00d4ff;--p:#a855f7;--t:#e8ecff;--m:#9aa6d8;--ok:#2ee59d;--bad:#ff5c7a}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",system-ui,sans-serif;background:radial-gradient(circle at 15% 0,#1d2266,transparent 55%),radial-gradient(circle at 90% 20%,#3a1670,transparent 45%),var(--bg);color:var(--t);min-height:100vh}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 18px}
+.logo{font-size:1.6rem;font-weight:800;background:linear-gradient(90deg,var(--b),var(--p));-webkit-background-clip:text;background-clip:text;color:transparent}
+.demo{background:#2a1a5e;border-bottom:1px solid #5b3bb5;text-align:center;font-size:.85rem;padding:6px 10px;color:#d9c8ff}
+.pill{display:inline-block;padding:6px 12px;border-radius:99px;background:#151d55;border:1px solid #2f3fa8;font-weight:700}
+.seg button{background:#151d55;color:var(--m);border:1px solid #2f3fa8;padding:8px 14px;cursor:pointer;font-weight:700;font-size:.95rem}
+.seg button:first-child{border-radius:12px 0 0 12px}.seg button:last-child{border-radius:0 12px 12px 0}
+.seg button.on{background:linear-gradient(90deg,var(--b),var(--p));color:#05071a}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 8px}
+nav button{background:transparent;color:var(--t);border:1px solid #2f3fa8;border-radius:12px;padding:9px 14px;cursor:pointer;font-weight:700}
+nav button.on{background:#1b2575;box-shadow:0 0 14px #00d4ff66;border-color:var(--b)}
+main{max-width:1000px;margin:0 auto;padding:10px 18px 60px}
+h1,h2,h3{margin:.4em 0}
+.card{background:linear-gradient(160deg,#151d52,#0e1440);border:1px solid #2a3a9a;border-radius:18px;padding:18px;box-shadow:0 0 18px #00d4ff22,0 0 40px #a855f711;margin-bottom:16px}
+.card:hover{box-shadow:0 0 22px #00d4ff44,0 0 44px #a855f722}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.grid .card{margin:0}
+.big{font-size:2.1rem;font-weight:800;color:var(--b);text-shadow:0 0 12px #00d4ff88}
+.muted{color:var(--m);font-size:.92rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.btn{background:linear-gradient(90deg,var(--b),var(--p));color:#05071a;border:0;border-radius:12px;padding:10px 18px;font-weight:800;cursor:pointer;font-size:1rem;box-shadow:0 0 14px #a855f777}
+.btn:hover{filter:brightness(1.12)}.btn.alt{background:#1b2575;color:var(--t);box-shadow:none;border:1px solid #3b4bc8}
+.btn.red{background:#5a1030;color:#ffd0da;box-shadow:none;border:1px solid var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:12px;border:2px solid #2f3fa8;background:#0d1342;color:var(--t);font-size:1rem;cursor:pointer}
+.opt.sel{border-color:var(--b);box-shadow:0 0 12px #00d4ff77}
+.opt.good{border-color:var(--ok);background:#0b3b33;color:#fff}
+.opt.bad{border-color:var(--bad);background:#43122b;color:#fff}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #3b4bc8;background:#0b1038;color:var(--t);font:inherit;margin:4px 0 10px}
+label{font-weight:700;font-size:.92rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.msg{padding:10px 14px;border-radius:12px;margin:10px 0;font-weight:700}
+.msg.ok{background:#0b3b33;border:1px solid var(--ok)}.msg.bad{background:#43122b;border:1px solid var(--bad)}
+.empty{text-align:center;padding:28px;color:var(--m);border:2px dashed #2f3fa8;border-radius:18px}
+.chips button{margin:0 6px 8px 0}
+.code{font-size:2rem;letter-spacing:3px;font-weight:800;color:var(--p);text-shadow:0 0 12px #a855f7aa}
+.bar{height:10px;border-radius:9px;background:#0b1038;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--b),var(--p))}
+canvas{width:100%;max-width:360px;display:block;margin:10px auto;border-radius:16px;background:#070b26;border:1px solid var(--b);touch-action:none;box-shadow:0 0 20px #00d4ff55}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:380px;margin:12px auto}
+.mem button{aspect-ratio:1;font-size:2rem;border-radius:14px;border:2px solid #3b4bc8;background:#151d55;color:var(--t);cursor:pointer}
+.mem button.up{background:#1b2575;border-color:var(--b)}.mem button.done{background:#0b3b33;border-color:var(--ok)}
+details{background:#0d1342;border-radius:12px;padding:10px 14px;margin:8px 0;border:1px solid #2a3a9a}summary{cursor:pointer;font-weight:700}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);padding:12px 20px;border-radius:14px;font-weight:700;z-index:9;max-width:90%;text-align:center}
+.toast.ok{background:#0b3b33;border:1px solid var(--ok)}.toast.bad{background:#43122b;border:1px solid var(--bad)}
+@media(max-width:560px){.two{grid-template-columns:1fr}.big{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<div class="demo">🧪 LOCAL DEMO: everything is saved only in this browser (localStorage). It is not secure, not synced online, and anyone can edit it. Do not enter real personal information.</div>
+<div id="app"></div>
+<div id="toast"></div>
+<script>
+const KEY='studyverse_demo_v1';
+const SUBJ=['History','Mathematics','Science','English','Bahasa Melayu'];
+const ICON={History:'🏛️',Mathematics:'➗',Science:'🔬',English:'📖','Bahasa Melayu':'🌺'};
+const Q=(q,o,a)=>({q,o,a});
+const BUILT=[
+{id:'h1',title:'Ancient Wonders',subject:'History',reward:5,time:0,qs:[
+Q('Which ancient people built the pyramids at Giza?',['Egyptians','Romans','Vikings','Aztecs'],0),
+Q('The Great Wall is found in which country?',['Brazil','China','Egypt','Italy'],1),
+Q('Who sailed across the Atlantic Ocean in 1492 for Spain?',['Marco Polo','Christopher Columbus','Captain Cook','Magellan'],1)]},
+{id:'m1',title:'Quick Sums',subject:'Mathematics',reward:5,time:0,qs:[
+Q('What is 7 + 8?',['14','15','16','17'],1),
+Q('What is 9 × 6?',['54','56','63','45'],0),
+Q('What is half of 90?',['40','35','45','50'],2)]},
+{id:'s1',title:'Our Amazing World',subject:'Science',reward:5,time:0,qs:[
+Q('Which planet is closest to the Sun?',['Venus','Mercury','Earth','Mars'],1),
+Q('What do plants need to make their own food?',['Sunlight','Sugar','Plastic','Moonlight'],0),
+Q('At what temperature does water freeze?',['10°C','50°C','0°C','100°C'],2)]},
+{id:'e1',title:'Word Power',subject:'English',reward:5,time:0,qs:[
+Q('What is the opposite of "hot"?',['Warm','Cold','Spicy','Sunny'],1),
+Q('Which word is a noun?',['Run','Quickly','Happy','Dog'],3),
+Q('What is the plural of "child"?',['Childs','Childes','Children','Childrens'],2)]},
+{id:'b1',title:'Mari Belajar Bahasa Melayu',subject:'Bahasa Melayu',reward:5,time:0,qs:[
+Q('Apakah maksud "terima kasih"?',['Thank you','Good night','Sorry','Welcome'],0),
+Q('Apakah ibu negara Malaysia?',['Ipoh','Johor Bahru','Kuala Lumpur','Kuching'],2),
+Q('Apakah warna "merah" dalam bahasa Inggeris?',['Blue','Green','Yellow','Red'],3)]}
+];
+const GAMES=[
+{id:'memory',name:'Memory Match',icon:'🧠',cost:10,desc:'Flip cards and find all the matching pairs.'},
+{id:'star',name:'Star Catcher',icon:'⭐',cost:25,desc:'Catch falling stars in 30 seconds. Dodge the comets!'},
+{id:'word',name:'Word Scramble',icon:'🔤',cost:40,desc:'Unscramble 5 words using the hints.'},
+{id:'fish',name:'Fishing Frenzy',icon:'🎣',cost:15,desc:'Tap the fish before they swim away. Skip the old boots!'},
+{id:'mines',name:'Mini Mines',icon:'💎',cost:20,desc:'Uncover every gem without tapping a bomb. Numbers show nearby bombs.'},
+{id:'treat',name:'Tag or Treat',icon:'🍬',cost:30,desc:'Tap the sweet treats fast. Avoid the spiders!'},
+{id:'book',name:'Book Rush',icon:'📚',cost:35,desc:'Collect flying books in 30 seconds. TVs are distractions!'},
+{id:'whack',name:'Whack-a-Critter',icon:'🐹',cost:12,desc:'Tap the pop-up hamsters. Leave the hedgehogs alone!'},
+{id:'ttt',name:'Tic-Tac-Toe',icon:'❌',cost:18,desc:'Beat the computer by getting three in a row.'},
+{id:'echo',name:'Color Echo',icon:'🎨',cost:22,desc:'Watch the color pattern, then repeat it from memory.'},
+{id:'hang',name:'Word Hero',icon:'🦸',cost:28,desc:'Guess the secret word before you run out of hearts.'},
+{id:'snake',name:'Snake Trail',icon:'🐍',cost:45,desc:'Eat apples to grow longer. Do not hit the walls or yourself!'},
+{id:'rps',name:'Rock Paper Scissors',icon:'✂️',cost:0,desc:'Play 5 rounds against the computer.'},
+{id:'bubble',name:'Bubble Pop',icon:'🫧',cost:11,desc:'Pop the bubbles. Do not touch the pins!'},
+{id:'react',name:'Reaction Rush',icon:'⚡',cost:14,desc:'Tap the moment the box turns green.'},
+{id:'higher',name:'Number Detective',icon:'🔍',cost:16,desc:'Find my secret number from 1 to 100 using higher/lower clues.'},
+{id:'candy',name:'Candy Quest',icon:'🍭',cost:17,desc:'Collect the candy and dodge the rocks.'},
+{id:'mathd',name:'Math Dash',icon:'🧮',cost:19,desc:'Answer 10 quick sums. Great brain training!'},
+{id:'garden',name:'Garden Guard',icon:'🌻',cost:21,desc:'Tap the caterpillars but protect the flowers.'},
+{id:'cafe',name:'Cafe Rush',icon:'☕',cost:24,desc:'Serve customers by tapping their order in the right order.'},
+{id:'claw',name:'Claw Mania',icon:'🧸',cost:27,desc:'Time your drop to grab a prize.'},
+{id:'racing',name:'Road Dodger',icon:'🏎️',cost:32,desc:'Switch lanes to dodge the cones.'},
+{id:'bounce',name:'Bounce Bricks',icon:'🎾',cost:38,desc:'Bounce the ball and break all the bricks.'}];
+const CODE='STUDY-DEMO-24';
+
+function fresh(){return{role:'student',coins:0,unlocked:[],results:{},custom:[],hs:{}}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&typeof d==='object')return Object.assign(fresh(),d)}catch(e){}return fresh()}
+let S=load(),view='home',run=null,timer=null,gameStop=null,draft=[],filter='All',game=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Could not save in this browser.','bad')}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const allQ=()=>BUILT.concat(S.custom);
+function isU(g){return g.cost===0||S.unlocked.includes(g.id)}
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function toast(m,t){const e=$('#toast');e.innerHTML='<div class="toast '+(t||'ok')+'">'+esc(m)+'</div>';clearTimeout(toast.h);toast.h=setTimeout(()=>e.innerHTML='',2800)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function stats(){let done=0,ans=0,ok=0;allQ().forEach(q=>{const r=S.results[q.id];if(r){done++;ans+=r.total;ok+=r.score}});return{done,ans,ok,acc:ans?Math.round(ok/ans*100):0}}
+function stopRun(){clearInterval(timer);timer=null;run=null}
+function stopGame(){if(gameStop){gameStop();gameStop=null}}
+function go(v){stopRun();stopGame();game=null;view=v;render()}
+function setRole(r){S.role=r;save();go(r==='student'?'home':'create')}
+function qMeta(q){return '<span class="pill">'+(q.time?'⏱ '+q.time+' min':'No time limit')+'</span> <span class="pill">🪙 '+q.reward+' per correct</span>'}
+
+const NAVS={student:[['home','🏠 Home'],['quizzes','📝 Quizzes'],['arcade','🎮 Arcade'],['progress','📊 My Progress']],
+teacher:[['create','➕ Create Quiz'],['tquizzes','📚 My Quizzes'],['results','🧾 Class Results'],['class','🔑 Classroom Code']]};
+function render(){
+ const names=NAVS[S.role].map(n=>n[0]);if(!names.includes(view))view=names[0];
+ $('#app').innerHTML=`<header><div class="logo">🚀 StudyVerse <span class="muted">demo</span></div>
+ <div class="row"><span class="pill">🪙 ${S.coins} coins</span>
+ <div class="seg" title="Demo role switch (no login)"><button class="${S.role==='student'?'on':''}" onclick="setRole('student')">🎓 Student</button><button class="${S.role==='teacher'?'on':''}" onclick="setRole('teacher')">🧑‍🏫 Teacher</button></div></div></header>
+ <nav>${NAVS[S.role].map(n=>`<button class="${view===n[0]?'on':''}" onclick="go('${n[0]}')">${n[1]}</button>`).join('')}</nav>
+ <main id="main"></main>`;
+ draw();
+}
+function draw(){
+ const V={home,quizzes,arcade,progress,create,tquizzes,results,class:classView};
+ $('#main').innerHTML=(view==='quizzes'&&run)?renderRun():V[view]();
+ if(view==='create')showDraft();
+ if(view==='arcade'&&game)startGame(game);
+ if(view==='quizzes'&&run&&run.stage==='play')startGame(run.reward);
+}
+
+/* ---------- STUDENT ---------- */
+function home(){const st=stats();
+ return `<div class="card"><h1>Welcome back, Star Learner! 🌟</h1><p class="muted">Pick a subject, answer questions, earn coins and unlock games.</p></div>
+ <div class="grid"><div class="card"><div class="muted">Quizzes completed</div><div class="big">${st.done}</div></div>
+ <div class="card"><div class="muted">Accuracy</div><div class="big">${st.acc}%</div></div>
+ <div class="card"><div class="muted">Coin balance</div><div class="big">🪙 ${S.coins}</div></div></div>
+ <h2>Choose a subject</h2><div class="grid">${SUBJ.map(s=>{const n=allQ().filter(q=>q.subject===s).length;
+ return `<div class="card"><div style="font-size:2.2rem">${ICON[s]}</div><h3>${s}</h3><p class="muted">${n} quiz${n==1?'':'zes'}</p><button class="btn" onclick="filter='${s}';go('quizzes')">Open</button></div>`}).join('')}</div>
+ <div class="card" style="margin-top:16px"><div class="row"><div><b>🎮 Game Arcade</b><div class="muted">Spend coins to unlock mini-games.</div></div><button class="btn alt" onclick="go('arcade')">Visit Arcade</button></div></div>
+ <div class="row"><button class="btn red" onclick="resetDemo()">🔄 Reset demo</button></div>`}
+function quizzes(){
+ const list=allQ().filter(q=>filter==='All'||q.subject===filter);
+ return `<h1>📝 Quizzes</h1><div class="chips">${['All'].concat(SUBJ).map(s=>`<button class="btn ${filter===s?'':'alt'}" onclick="filter='${s}';draw()">${s==='All'?'⭐ All':ICON[s]+' '+s}</button>`).join('')}</div>
+ ${list.length?`<div class="grid">${list.map(q=>{const r=S.results[q.id];
+ return `<div class="card"><div class="muted">${ICON[q.subject]} ${q.subject}</div><h3>${esc(q.title)}</h3><p>${q.qs.length} question${q.qs.length==1?'':'s'}</p><p>${qMeta(q)}</p>
+ ${r?`<p>✅ Last score: <b>${r.score}/${r.total}</b></p><p class="muted">Coins are earned only the first time you finish a quiz.</p>`:''}
+ <button class="btn" onclick="start('${q.id}')">${r?'Try again':'Start quiz'}</button></div>`}).join('')}</div>`
+ :'<div class="empty">No quizzes here yet. Ask a teacher to create one! 📭</div>'}`}
+function start(id){const q=allQ().find(x=>x.id===id);if(!q)return;stopRun();stopGame();
+ run={q,i:0,ans:[],sel:null,sub:false,work:'',done:false,left:(q.time||0)*60,stage:'pick',reward:null};
+ view='quizzes';render()}
+function chooseGame(id){run.reward=id;beginQuiz()}
+function rg(){return GAMES.find(g=>g.id===run.reward)}
+function beginQuiz(){stopGame();run.stage='quiz';const q=run.q;
+ if(q.time)timer=setInterval(()=>{run.left--;const e=$('#tm');if(e)e.textContent=fmt(Math.max(run.left,0));if(run.left<=0){toast("⏰ Time's up!",'bad');finish()}},1000);
+ draw()}
+function pickHTML(){const q=run.q,list=GAMES.filter(isU).sort((a,b)=>a.cost-b.cost);
+ return `<div class="card"><h1>🎁 Pick your reward game!</h1><p>Quiz: <b>${esc(q.title)}</b> (${q.qs.length} question${q.qs.length==1?'':'s'})</p><p>${qMeta(q)}</p>
+ <p class="muted">Choose the game you want to play. It stays locked until you have answered the quiz! ${q.time?'The quiz timer starts after you choose. ':''}Unlock more games in the Arcade with coins.</p>
+ <div class="grid">${list.map(g=>`<div class="card"><div style="font-size:2rem">${g.icon}</div><b>${g.name}</b><p class="muted">${g.desc}</p><button class="btn" onclick="chooseGame('${g.id}')">Choose &amp; start quiz</button></div>`).join('')}</div>
+ <button class="btn alt" style="margin-top:12px" onclick="go('quizzes')">⬅ Back to quizzes</button></div>`}
+function gameStageHTML(){const g=rg();
+ return `<div class="card"><div class="row"><h2>${g.icon} ${g.name}</h2><span class="pill">🎁 Reward for finishing: ${esc(run.q.title)}</span></div><div id="gbox"></div>
+ <div class="row" style="margin-top:12px"><button class="btn alt" onclick="stopGame();run.stage='quiz';draw()">⬅ Back to results</button><button class="btn" onclick="go('quizzes')">Back to quizzes</button></div></div>`}
+function renderRun(){
+ if(run.stage==='pick')return pickHTML();if(run.stage==='play')return gameStageHTML();
+ if(run.done)return resultHTML();
+ const q=run.q,Qn=q.qs[run.i],math=q.subject==='Mathematics';
+ return `<div class="card"><div class="row"><b>${ICON[q.subject]} ${esc(q.title)}</b><span class="pill">🎁 ${rg().icon} ${rg().name} unlocks after the quiz</span><span class="pill">Question ${run.i+1} of ${q.qs.length}</span>${q.time?`<span class="pill">⏱ <span id="tm">${fmt(Math.max(run.left,0))}</span></span>`:''}</div>
+ <h2>${esc(Qn.q)}</h2>
+ ${Qn.o.map((o,k)=>{let c='opt';if(run.sub){if(k===Qn.a)c+=' good';else if(k===run.sel)c+=' bad'}else if(k===run.sel)c+=' sel';
+ return `<button class="${c}" ${run.sub?'disabled':''} onclick="pick(${k})">${'ABCD'[k]}. ${esc(o)}</button>`}).join('')}
+ ${math?`<label for="work">✍️ Show your working</label><textarea id="work" rows="3" placeholder="Write how you solved it..." ${run.sub?'readonly':''}>${esc(run.work)}</textarea>`:''}
+ ${run.sub?`<div class="msg ${run.ans[run.i].ok?'ok':'bad'}">${run.ans[run.i].ok?'🎉 Correct! Great job!':'💡 Not quite. The right answer is shown in green. Keep going!'}</div>
+ <button class="btn" onclick="nextQ()">${run.i+1>=q.qs.length?'Finish quiz 🏁':'Next question ➡️'}</button>`
+ :`<button class="btn" onclick="submitAns()">Submit answer</button>`}
+ <button class="btn alt" style="margin-left:8px" onclick="if(confirm('Leave this quiz? Your progress in it will be lost.'))go('quizzes')">Quit</button></div>`}
+function pick(k){run.sel=k;document.querySelectorAll('.opt').forEach((b,i)=>b.classList.toggle('sel',i===k))}
+function submitAns(){if(run.sel===null){toast('Please pick an answer first 🙂','bad');return}
+ const w=$('#work');run.work=w?w.value.trim():'';
+ run.ans[run.i]={sel:run.sel,ok:run.sel===run.q.qs[run.i].a,work:run.work};run.sub=true;draw()}
+function nextQ(){run.i++;run.sel=null;run.sub=false;run.work='';if(run.i>=run.q.qs.length)finish();else draw()}
+function finish(){if(!run||run.done)return;clearInterval(timer);timer=null;
+ const q=run.q;let score=0;
+ const answers=q.qs.map((_,i)=>run.ans[i]||{sel:null,ok:false,work:''});
+ answers.forEach(a=>{if(a.ok)score++});
+ const prior=S.results[q.id];const earned=(!prior||!prior.rewarded)?score*q.reward:0;
+ S.coins+=earned;
+ S.results[q.id]={score,total:q.qs.length,answers,date:new Date().toLocaleString(),rewarded:true,attempts:(prior?prior.attempts:0)+1,coins:(prior?prior.coins:0)+earned};
+ run.answered=answers.filter(a=>a.sel!==null).length;run.earned=earned;run.score=score;run.repeat=!!prior;run.done=true;save();render()}
+function resultHTML(){const q=run.q;
+ return `<div class="card" style="text-align:center"><div style="font-size:3rem">${run.score===q.qs.length?'🏆':'🌟'}</div><h1>You scored ${run.score} / ${q.qs.length}</h1>
+ <div class="msg ${run.earned?'ok':'bad'}">${run.earned?'🪙 You earned '+run.earned+' coins!':run.repeat?'You already earned coins for this quiz, so no more coins this time. Practice is still great!':'No coins this time. Try again to improve!'}</div>
+ ${run.answered>0?`<div class="msg ok">🎁 Quiz answered! Your reward game is unlocked.</div><button class="btn" onclick="run.stage='play';draw()">Play ${rg().icon} ${rg().name}</button> `:'<div class="msg bad">Answer at least one question to unlock your reward game.</div>'}
+ <p><button class="btn alt" onclick="start('${q.id}')">Try again</button> <button class="btn alt" onclick="go('quizzes')">Back to quizzes</button></p></div>`}
+
+function progress(){const st=stats();
+ const rows=allQ().map(q=>{const r=S.results[q.id];return `<tr><td>${ICON[q.subject]} ${esc(q.title)}</td><td>${r?r.score+'/'+r.total:'—'}</td><td>${r?r.attempts:0}</td><td>${r?'🪙 '+r.coins:'—'}</td></tr>`}).join('');
+ const un=GAMES.filter(g=>isU(g));
+ return `<h1>📊 My Progress</h1><div class="grid"><div class="card"><div class="muted">Available coins</div><div class="big">🪙 ${S.coins}</div></div>
+ <div class="card"><div class="muted">Quizzes done</div><div class="big">${st.done}/${allQ().length}</div><div class="bar"><i style="width:${Math.round(st.done/allQ().length*100)}%"></i></div></div>
+ <div class="card"><div class="muted">Accuracy</div><div class="big">${st.acc}%</div></div></div>
+ <div class="card" style="margin-top:16px;overflow-x:auto"><h3>Quiz scores</h3><table style="width:100%;border-collapse:collapse"><tr class="muted" style="text-align:left"><th>Quiz</th><th>Score</th><th>Tries</th><th>Coins earned</th></tr>${rows}</table></div>
+ <div class="card"><h3>Unlocked games</h3>${un.length?un.map(g=>`<p>${g.icon} ${g.name} <span class="muted">${hsText(g.id)}</span></p>`).join(''):'<div class="empty">No games unlocked yet. Earn coins in quizzes! 🎮</div>'}</div>
+ <button class="btn red" onclick="resetDemo()">🔄 Reset demo</button>`}
+function resetDemo(){if(confirm('Reset the whole demo? This deletes coins, results, unlocked games AND teacher-made quizzes in this browser.')){localStorage.removeItem(KEY);S=fresh();stopRun();stopGame();draft=[];filter='All';view='home';render();toast('Demo reset. Fresh start! ✨')}}
+function hsText(id){const v=S.hs[id];if(v==null)return '';return id==='memory'?'(best: '+v+' moves)':id==='react'?'(best: '+v+' ms)':id==='higher'?'(fewest guesses: '+v+')':'(best score: '+v+')'}
+
+/* ---------- ARCADE ---------- */
+function arcade(){
+ if(game){const g=GAMES.find(x=>x.id===game);return `<div class="card"><div class="row"><h2>${g.icon} ${g.name}</h2><button class="btn alt" onclick="stopGame();game=null;draw()">⬅ Back to Arcade</button></div><div id="gbox"></div></div>`}
+ return `<h1>🎮 Game Arcade</h1><p class="muted">You have 🪙 ${S.coins} coins. Games are just for fun and do not give coins.</p>
+ <div class="grid">${GAMES.slice().sort((a,b)=>a.cost-b.cost).map(g=>{const u=isU(g);
+ return `<div class="card"><div style="font-size:2.4rem">${g.icon}</div><h3>${g.name}</h3><p class="muted">${g.desc}</p><p>${u?'✅ Unlocked':'🔒 Costs 🪙 '+g.cost}</p><p class="muted">${hsText(g.id)}</p>
+ ${u?`<button class="btn" onclick="game='${g.id}';draw()">Play</button>`:`<button class="btn" onclick="unlock('${g.id}')">Unlock for ${g.cost} coins</button>`}</div>`}).join('')}</div>`}
+function unlock(id){const g=GAMES.find(x=>x.id===id);
+ if(S.coins<g.cost){toast('Not enough coins yet. You need '+(g.cost-S.coins)+' more. Try a quiz! 📝','bad');return}
+ S.coins-=g.cost;S.unlocked.push(id);save();render();toast('🎉 '+g.name+' unlocked!')}
+function startGame(id){const box=$('#gbox');if(!box)return;stopGame();const T={candy:{sec:25,gap:520,life:1100,badP:.25,good:'🍭',bad:'🪨',help:'Tap the candy 🍭. Do not tap rocks 🪨.'},bubble:{sec:25,gap:420,life:1300,badP:.2,good:'🫧',bad:'📌',help:'Pop the bubbles 🫧. Do not tap pins 📌.'},garden:{sec:25,gap:550,life:1200,badP:.25,good:'🐛',bad:'🌻',help:'Tap the caterpillars 🐛. Do not tap flowers 🌻.'},whack:{sec:25,gap:600,life:900,badP:.25,good:'🐹',bad:'🦔',help:'Tap the hamsters 🐹. Avoid hedgehogs 🦔.'},fish:{sec:25,gap:700,life:1500,badP:.2,good:'🐟',bad:'🥾',help:'Tap the fish 🐟. Avoid old boots 🥾.'},treat:{sec:20,gap:500,life:1100,badP:.25,good:'🍬',bad:'🕷️',help:'Tap the treats 🍬. Avoid spiders 🕷️.'},book:{sec:30,gap:450,life:1000,badP:.2,good:'📚',bad:'📺',help:'Tap the books 📚. Avoid the TV 📺.'}};
+ if(T[id])tapGame(id,box,T[id]);else ({memory:memoryGame,star:starGame,word:wordGame,mines:minesGame,ttt:tttGame,echo:echoGame,hang:hangGame,snake:snakeGame,rps:rpsGame,react:reactGame,higher:numGame,mathd:mathGame,cafe:cafeGame,claw:clawGame,racing:raceGame,bounce:bounceGame})[id](box)}
+function setHS(id,v,lowBetter){const o=S.hs[id];if(o==null||(lowBetter?v<o:v>o)){S.hs[id]=v;save();return true}return false}
+
+function starGame(box){
+ box.innerHTML='<p class="muted">Move your mouse, finger, or ← → keys to move the basket. Catch ⭐ (+1), avoid ☄️ (−1).</p><canvas id="cv" width="360" height="440"></canvas><div id="gmsg" class="row" style="justify-content:center"></div>';
+ const cv=$('#cv'),c=cv.getContext('2d');let x=180,stars=[],score=0,t=30,last=performance.now(),sp=0,raf,over=false,keys={};
+ const mv=e=>{const r=cv.getBoundingClientRect();x=Math.max(40,Math.min(320,(e.clientX-r.left)*360/r.width))};
+ cv.addEventListener('pointermove',mv);cv.addEventListener('pointerdown',mv);
+ const kd=e=>{keys[e.key]=true;if(e.key.startsWith('Arrow'))e.preventDefault()},ku=e=>keys[e.key]=false;
+ document.addEventListener('keydown',kd);document.addEventListener('keyup',ku);
+ gameStop=()=>{over=true;cancelAnimationFrame(raf);document.removeEventListener('keydown',kd);document.removeEventListener('keyup',ku)};
+ function loop(now){if(over)return;const dt=Math.min((now-last)/1000,.05);last=now;t-=dt;sp-=dt;
+  if(keys.ArrowLeft)x=Math.max(40,x-300*dt);if(keys.ArrowRight)x=Math.min(320,x+300*dt);
+  if(sp<=0){stars.push({x:20+Math.random()*320,y:-10,v:100+Math.random()*90,bad:Math.random()<.22});sp=.55}
+  stars.forEach(s=>s.y+=s.v*dt);
+  stars=stars.filter(s=>{if(s.y>395&&s.y<425&&Math.abs(s.x-x)<42){score=Math.max(0,score+(s.bad?-1:1));return false}return s.y<460});
+  c.clearRect(0,0,360,440);c.font='28px serif';c.textAlign='center';stars.forEach(s=>c.fillText(s.bad?'☄️':'⭐',s.x,s.y));
+  c.fillStyle='#a855f7';c.shadowColor='#00d4ff';c.shadowBlur=14;c.beginPath();c.roundRect(x-40,410,80,18,9);c.fill();c.shadowBlur=0;
+  c.fillStyle='#e8ecff';c.font='bold 18px sans-serif';c.textAlign='left';c.fillText('Score '+score,10,24);c.textAlign='right';c.fillText('⏱ '+Math.max(0,Math.ceil(t)),350,24);
+  if(t<=0){over=true;const nb=setHS('star',score);$('#gmsg').innerHTML='<div class="msg ok">Time! You caught '+score+' stars'+(nb?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'star\')">Play again</button>';return}
+  raf=requestAnimationFrame(loop)}
+ raf=requestAnimationFrame(loop)}
+
+function memoryGame(box){
+ const E=['🐶','🐱','🦊','🐼','🐸','🦄','🐢','🐙'];let cards=shuffle(E.concat(E)),open=[],lock=false,moves=0,found=0;
+ box.innerHTML='<p class="muted">Find all 8 pairs in as few moves as you can.</p><div class="pill" id="mv">Moves: 0</div><div class="mem" id="mg"></div><div id="gmsg"></div>';
+ const g=$('#mg');
+ cards.forEach((e,i)=>{const b=document.createElement('button');b.textContent='❓';b.setAttribute('aria-label','Card '+(i+1));
+  b.onclick=()=>{if(lock||b.classList.contains('up')||b.classList.contains('done'))return;b.textContent=e;b.classList.add('up');open.push({b,e});
+   if(open.length===2){moves++;$('#mv').textContent='Moves: '+moves;const[a,d]=open;
+    if(a.e===d.e){a.b.className=d.b.className='done';found++;open=[];
+     if(found===8){const nb=setHS('memory',moves,true);$('#gmsg').innerHTML='<div class="msg ok">🎉 You did it in '+moves+' moves'+(nb?' – NEW BEST! 🏆':'')+'!</div><button class="btn" onclick="startGame(\'memory\')">Play again</button>'}}
+    else{lock=true;setTimeout(()=>{[a,d].forEach(o=>{o.b.textContent='❓';o.b.classList.remove('up')});open=[];lock=false},800)}}};
+  g.appendChild(b)})}
+
+function wordGame(box){
+ const W=[['PLANET','We live on one. Earth is one.'],['JUNGLE','A thick, wild forest with many animals.'],['ROCKET','It flies to space.'],['BANANA','A long yellow fruit.'],['SCHOOL','Where students learn.']];
+ let i=0,score=0;
+ function scr(w){let s;do{s=shuffle(w.split('')).join('')}while(s===w);return s}
+ function show(){const[w,h]=W[i];box.innerHTML=`<p class="muted">Word ${i+1} of ${W.length}</p><div class="big" style="letter-spacing:6px;text-align:center">${scr(w)}</div><p style="text-align:center">💡 ${h}</p>
+ <input id="wi" maxlength="12" autocomplete="off" placeholder="Type the word"><div id="gmsg"></div><button class="btn" id="wb">Check</button> <button class="btn alt" id="ws">Skip</button>`;
+ const nxt=()=>{i++;if(i>=W.length){const nb=setHS('word',score);box.innerHTML=`<div class="msg ok">Finished! You got ${score} of ${W.length}${nb?' – NEW BEST! 🏆':''}</div><button class="btn" onclick="startGame('word')">Play again</button>`}else show()};
+ $('#wb').onclick=()=>{const v=$('#wi').value.trim().toUpperCase();if(!v){$('#gmsg').innerHTML='<div class="msg bad">Type your answer first 🙂</div>';return}
+  if(v===w){score++;$('#gmsg').innerHTML='<div class="msg ok">✅ Yes! It is '+w+'</div>';$('#wb').disabled=$('#ws').disabled=true;setTimeout(nxt,900)}
+  else $('#gmsg').innerHTML='<div class="msg bad">Not yet. Try again or skip!</div>'};
+ $('#ws').onclick=nxt;$('#wi').focus()}
+ show()}
+
+function tapGame(id,box,c){
+ let score=0,t=c.sec,over=false;
+ box.innerHTML='<p class="muted">'+c.help+'</p><div class="row" style="justify-content:center"><span class="pill" id="ts">Score: 0</span><span class="pill" id="tt">⏱ '+t+'</span></div><div id="ta" style="position:relative;height:320px;max-width:420px;margin:10px auto;border-radius:16px;background:#070b26;border:1px solid var(--b);overflow:hidden"></div><div id="gmsg"></div>';
+ const a=$('#ta');
+ function spawn(){if(over)return;const bad=Math.random()<c.badP,b=document.createElement('button');b.textContent=bad?c.bad:c.good;
+  b.style.cssText='position:absolute;font-size:2.2rem;background:none;border:0;cursor:pointer;left:'+Math.random()*82+'%;top:'+Math.random()*78+'%';
+  b.onclick=()=>{score=Math.max(0,score+(bad?-1:1));$('#ts').textContent='Score: '+score;b.remove()};
+  a.appendChild(b);setTimeout(()=>b.remove(),c.life)}
+ const sp=setInterval(spawn,c.gap);
+ const tm=setInterval(()=>{t--;$('#tt').textContent='⏱ '+t;if(t<=0)end()},1000);
+ gameStop=()=>{over=true;clearInterval(sp);clearInterval(tm)};
+ function end(){gameStop();a.innerHTML='';const nb=setHS(id,score);$('#gmsg').innerHTML='<div class="msg ok">Time! Your score: '+score+(nb?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\''+id+'\')">Play again</button>'}}
+function minesGame(box){
+ const N=6,M=5;let cells=[],over=false,shown=0;
+ const idx=shuffle([...Array(N*N).keys()]).slice(0,M);
+ for(let i=0;i<N*N;i++)cells.push({m:idx.includes(i),r:false,n:0});
+ const nb=i=>{const x=i%N,y=Math.floor(i/N),o=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const X=x+dx,Y=y+dy;if((dx||dy)&&X>=0&&X<N&&Y>=0&&Y<N)o.push(Y*N+X)}return o};
+ cells.forEach((c,i)=>c.n=nb(i).filter(j=>cells[j].m).length);
+ box.innerHTML='<p class="muted">Uncover all '+(N*N-M)+' gems 💎. Numbers tell how many bombs 💣 touch that square.</p><div class="mem" id="mg" style="grid-template-columns:repeat(6,1fr);max-width:360px"></div><div id="gmsg"></div>';
+ const g=$('#mg'),bs=[];
+ function paint(){cells.forEach((c,i)=>{const b=bs[i];if(c.r){b.className='done';b.textContent=c.m?'💣':(c.n||'💎')}})}
+ function reveal(i){const c=cells[i];if(c.r)return;c.r=true;if(!c.m){shown++;if(c.n===0)nb(i).forEach(reveal)}}
+ function end(win){over=true;cells.forEach(c=>{if(c.m)c.r=true});paint();const b=setHS('mines',shown);
+  $('#gmsg').innerHTML='<div class="msg '+(win?'ok':'bad')+'">'+(win?'🎉 You found every gem!':'💥 Boom! You uncovered '+shown+' gems.')+(b?' New best! 🏆':'')+'</div><button class="btn" onclick="startGame(\'mines\')">Play again</button>'}
+ cells.forEach((c,i)=>{const b=document.createElement('button');b.style.fontSize='1.4rem';b.textContent='❓';b.onclick=()=>{if(over||c.r)return;if(c.m){c.r=true;end(false);return}reveal(i);paint();if(shown===N*N-M)end(true)};bs.push(b);g.appendChild(b)})}
+
+function echoGame(box){
+ const col=['#ff5c7a','#2ee59d','#00d4ff','#f5c542'];let seq=[],pos=0,turn=false,tms=[];
+ box.innerHTML='<p class="muted">Watch the colors, then repeat them in the same order.</p><div class="pill" id="es">Round: 0</div><div class="mem" id="eg" style="grid-template-columns:1fr 1fr;max-width:280px"></div><div id="gmsg"></div>';
+ const bs=col.map((c,i)=>{const b=document.createElement('button');b.style.cssText='background:'+c+';opacity:.45;border:0';b.setAttribute('aria-label','Color '+(i+1));b.onclick=()=>press(i);$('#eg').appendChild(b);return b});
+ gameStop=()=>tms.forEach(clearTimeout);
+ function flash(i,d){tms.push(setTimeout(()=>bs[i].style.opacity=1,d),setTimeout(()=>bs[i].style.opacity=.45,d+400))}
+ function next(){seq.push(Math.floor(Math.random()*4));pos=0;turn=false;$('#es').textContent='Round: '+seq.length;seq.forEach((v,k)=>flash(v,600+k*700));tms.push(setTimeout(()=>turn=true,600+seq.length*700))}
+ function press(i){if(!turn)return;flash(i,0);
+  if(i!==seq[pos]){turn=false;const sc=seq.length-1,nb=setHS('echo',sc);$('#gmsg').innerHTML='<div class="msg bad">Oops! You remembered '+sc+' round(s).'+(nb&&sc?' New best! 🏆':'')+'</div><button class="btn" onclick="startGame(\'echo\')">Play again</button>';return}
+  pos++;if(pos===seq.length){turn=false;tms.push(setTimeout(next,800))}}
+ next()}
+function tttGame(box){
+ let b=Array(9).fill(''),over=false;const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+ const win=p=>L.some(l=>l.every(i=>b[i]===p)),full=()=>!b.includes('');
+ const find=p=>{for(const l of L){const e=l.filter(i=>!b[i]);if(e.length===1&&l.filter(i=>b[i]===p).length===2)return e[0]}return -1};
+ function paint(m){box.innerHTML='<p class="muted">You are ❌. Get three in a row!</p><div class="mem" style="grid-template-columns:repeat(3,1fr);max-width:300px">'+b.map((v,i)=>'<button '+(v||over?'disabled':'')+' onclick="ttt('+i+')">'+(v==='X'?'❌':v==='O'?'⭕':'')+'</button>').join('')+'</div>'+(m||'')+(over?'<button class="btn" onclick="startGame(\'ttt\')">Play again</button>':'')}
+ function end(r){over=true;if(r==='win'){S.hs.ttt=(S.hs.ttt||0)+1;save()}
+  paint(r==='win'?'<div class="msg ok">🎉 You won!</div>':r==='lose'?'<div class="msg bad">The computer won this time. Try again!</div>':'<div class="msg ok">It is a draw. Good game!</div>')}
+ window.ttt=i=>{if(over||b[i])return;b[i]='X';if(win('X'))return end('win');if(full())return end('draw');
+  let m=find('O');if(m<0)m=find('X');if(m<0&&!b[4])m=4;if(m<0){const e=b.map((v,k)=>v?-1:k).filter(k=>k>=0);m=e[Math.floor(Math.random()*e.length)]}
+  b[m]='O';if(win('O'))return end('lose');if(full())return end('draw');paint()};
+ paint()}
+function hangGame(box){
+ const W=['RAINBOW','ELEPHANT','LIBRARY','VOLCANO','PENCIL','GALAXY','TURTLE','BRIDGE','DOLPHIN','COMPASS'];
+ const w=W[Math.floor(Math.random()*W.length)];let g=[],lives=6;
+ function show(){const done=[...w].every(l=>g.includes(l)),lost=lives<=0;
+  box.innerHTML='<p class="muted">Guess the secret word one letter at a time.</p><div class="big" style="text-align:center;letter-spacing:6px">'+[...w].map(l=>g.includes(l)||lost?l:'_').join(' ')+'</div><p style="text-align:center">'+'❤️'.repeat(lives)+'🖤'.repeat(6-lives)+'</p><div style="text-align:center">'+'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>'<button class="btn alt" style="padding:6px 10px;margin:2px" '+(g.includes(l)||done||lost?'disabled':'')+' onclick="hg(\''+l+'\')">'+l+'</button>').join('')+'</div>'+(done?'<div class="msg ok">🎉 You saved the word!</div>':lost?'<div class="msg bad">Out of hearts! The word was '+w+'.</div>':'')+(done||lost?'<button class="btn" onclick="startGame(\'hang\')">Play again</button>':'')}
+ window.hg=l=>{if(g.includes(l))return;g.push(l);if(!w.includes(l))lives--;if([...w].every(x=>g.includes(x))){S.hs.hang=(S.hs.hang||0)+1;save()}show()};
+ show()}
+function snakeGame(box){
+ box.innerHTML='<p class="muted">Use the arrow keys or the buttons. Eat 🍎 but do not hit the walls or yourself.</p><canvas id="cv" width="300" height="300"></canvas><div class="row" style="justify-content:center"><button class="btn alt" data-d="L">⬅</button><button class="btn alt" data-d="U">⬆</button><button class="btn alt" data-d="D">⬇</button><button class="btn alt" data-d="R">➡</button></div><div id="gmsg"></div>';
+ const c=$('#cv').getContext('2d');let sn=[{x:7,y:7},{x:6,y:7}],d={x:1,y:0},nd=d,f={x:11,y:7},sc=0;
+ const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]},bd={L:[-1,0],R:[1,0],U:[0,-1],D:[0,1]};
+ const set=(x,y)=>{if(x!==-d.x||y!==-d.y)nd={x,y}};
+ const kd=e=>{if(dirs[e.key]){e.preventDefault();set(...dirs[e.key])}};
+ document.addEventListener('keydown',kd);
+ box.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>set(...bd[b.dataset.d]));
+ const iv=setInterval(step,150);
+ gameStop=()=>{clearInterval(iv);document.removeEventListener('keydown',kd)};
+ function step(){d=nd;const h={x:sn[0].x+d.x,y:sn[0].y+d.y};
+  if(h.x<0||h.y<0||h.x>=15||h.y>=15||sn.some(s=>s.x===h.x&&s.y===h.y)){gameStop();const nb=setHS('snake',sc);$('#gmsg').innerHTML='<div class="msg bad">Game over! You ate '+sc+' apple(s).'+(nb&&sc?' New best! 🏆':'')+'</div><button class="btn" onclick="startGame(\'snake\')">Play again</button>';return}
+  sn.unshift(h);if(h.x===f.x&&h.y===f.y){sc++;do{f={x:Math.floor(Math.random()*15),y:Math.floor(Math.random()*15)}}while(sn.some(s=>s.x===f.x&&s.y===f.y))}else sn.pop();
+  c.clearRect(0,0,300,300);c.fillStyle='#00d4ff';sn.forEach((s,i)=>{c.fillStyle=i?'#a855f7':'#00d4ff';c.fillRect(s.x*20+1,s.y*20+1,18,18)});
+  c.font='18px serif';c.fillText('🍎',f.x*20,f.y*20+17)}}
+
+function rpsGame(box){
+ const E=['✊','✋','✌️'];let w=0,l=0,r=0;
+ function show(m){box.innerHTML='<p class="muted">5 rounds. Rock beats scissors, scissors beat paper, paper beats rock.</p><div class="pill">Round '+Math.min(r+1,5)+'/5 • Wins '+w+' • Losses '+l+'</div><div style="text-align:center;margin:12px">'+E.map((e,i)=>'<button class="btn alt" style="font-size:2rem" '+(r>=5?'disabled':'')+' onclick="rps('+i+')">'+e+'</button>').join(' ')+'</div>'+(m||'')+(r>=5?'<div class="msg ok">Final: '+w+' win(s)'+(setHS('rps',w)?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'rps\')">Play again</button>':'')}
+ window.rps=i=>{if(r>=5)return;const c=Math.floor(Math.random()*3);r++;let m='Computer chose '+E[c]+'. ';
+  if(i===c)m+='Draw!';else if(i===(c+1)%3){w++;m+='You win this round! 🎉'}else{l++;m+='You lose this round.'}
+  show('<div class="msg ok">'+m+'</div>')};
+ show()}
+function reactGame(box){
+ let st=0,tm,state='idle';
+ box.innerHTML='<p class="muted">Wait for the box to turn green, then tap as fast as you can!</p><button id="rb" style="width:100%;max-width:360px;display:block;margin:12px auto;height:180px;border-radius:18px;border:0;font-size:1.3rem;font-weight:800;cursor:pointer;background:#1b2575;color:#fff">Tap to start</button><div id="gmsg"></div>';
+ const b=$('#rb');gameStop=()=>clearTimeout(tm);
+ function arm(){state='wait';b.style.background='#5a1030';b.style.color='#fff';b.textContent='Wait... 🔴';tm=setTimeout(()=>{state='go';st=performance.now();b.style.background='#2ee59d';b.style.color='#05071a';b.textContent='TAP NOW! 🟢'},1000+Math.random()*2500)}
+ b.onclick=()=>{if(state==='wait'){clearTimeout(tm);state='idle';b.style.background='#1b2575';b.textContent='Tap to try again';$('#gmsg').innerHTML='<div class="msg bad">Too early! Wait for green.</div>'}
+  else if(state==='go'){const ms=Math.round(performance.now()-st),nb=setHS('react',ms,true);state='idle';b.style.background='#1b2575';b.style.color='#fff';b.textContent='Tap to play again';$('#gmsg').innerHTML='<div class="msg ok">⚡ '+ms+' ms'+(nb?' – NEW BEST! 🏆':'')+'</div>'}
+  else{$('#gmsg').innerHTML='';arm()}}}
+function numGame(box){
+ const n=1+Math.floor(Math.random()*100);let tries=0,over=false;
+ box.innerHTML='<p class="muted">I am thinking of a number from 1 to 100. Find it in the fewest guesses!</p><input id="ng" type="number" min="1" max="100" placeholder="Your guess"><button class="btn" id="nb">Guess</button><div id="gmsg"></div>';
+ const go=()=>{if(over)return;const v=Number($('#ng').value);
+  if(!Number.isInteger(v)||v<1||v>100){$('#gmsg').innerHTML='<div class="msg bad">Type a whole number from 1 to 100.</div>';return}
+  tries++;
+  if(v===n){over=true;const nb=setHS('higher',tries,true);$('#gmsg').innerHTML='<div class="msg ok">🎉 Yes! It was '+n+'. You needed '+tries+' guess(es)'+(nb?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'higher\')">Play again</button>'}
+  else{$('#gmsg').innerHTML='<div class="msg bad">'+(v<n?'⬆️ Higher!':'⬇️ Lower!')+' Guesses so far: '+tries+'</div>';$('#ng').value='';$('#ng').focus()}};
+ $('#nb').onclick=go;$('#ng').onkeydown=e=>{if(e.key==='Enter')go()}}
+function mathGame(box){
+ let i=0,sc=0;const TOTAL=10;
+ function q(){
+  if(i>=TOTAL){const nb=setHS('mathd',sc);box.innerHTML='<div class="msg ok">Finished! You scored '+sc+' out of '+TOTAL+(nb?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'mathd\')">Play again</button>';return}
+  const o=['+','-','×'][Math.floor(Math.random()*3)];let a=2+Math.floor(Math.random()*10),b=2+Math.floor(Math.random()*10);
+  if(o==='-'&&b>a){const t=a;a=b;b=t}
+  const ans=o==='+'?a+b:o==='-'?a-b:a*b,st=new Set([ans]);
+  while(st.size<4)st.add(Math.max(0,ans+Math.floor(Math.random()*11)-5));
+  box.innerHTML='<div class="row"><span class="pill">Question '+(i+1)+'/'+TOTAL+'</span><span class="pill">Score '+sc+'</span></div><div class="big" style="text-align:center;margin:14px">'+a+' '+o+' '+b+' = ?</div><div class="grid">'+shuffle([...st]).map(v=>'<button class="btn alt" onclick="md('+v+','+ans+')">'+v+'</button>').join('')+'</div>'}
+ window.md=(v,a)=>{toast(v===a?'✅ Correct!':'❌ The answer was '+a,v===a?'ok':'bad');if(v===a)sc++;i++;q()};
+ q()}
+function cafeGame(box){
+ const M=['☕','🥐','🍪','🧃','🍰'];let o=[],pos=0,sc=0,t=45;
+ box.innerHTML='<p class="muted">Tap the menu items in the same order the customer asked. You have 45 seconds!</p><div class="row" style="justify-content:center"><span class="pill" id="cs">Orders: 0</span><span class="pill" id="ct">⏱ 45</span></div><div class="card" style="text-align:center"><div class="muted">Customer order</div><div id="co" style="font-size:2rem;min-height:48px"></div></div><div style="text-align:center" id="cm"></div><div id="gmsg"></div>';
+ const drawO=()=>{$('#co').innerHTML=o.map((v,i)=>'<span style="opacity:'+(i<pos?.3:1)+'">'+M[v]+'</span>').join(' ')};
+ const newO=()=>{o=Array.from({length:3},()=>Math.floor(Math.random()*5));pos=0;drawO()};
+ $('#cm').innerHTML=M.map((e,i)=>'<button class="btn alt" style="font-size:2rem;margin:4px" data-i="'+i+'">'+e+'</button>').join('');
+ $('#cm').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(t<=0)return;
+  if(+b.dataset.i===o[pos]){pos++;if(pos===o.length){sc++;$('#cs').textContent='Orders: '+sc;newO()}else drawO()}
+  else{pos=0;drawO();toast('Oops! Start the order again.','bad')}});
+ const tm=setInterval(()=>{t--;$('#ct').textContent='⏱ '+Math.max(t,0);if(t<=0){clearInterval(tm);const nb=setHS('cafe',sc);$('#gmsg').innerHTML='<div class="msg ok">Cafe closed! You served '+sc+' customer(s)'+(nb?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'cafe\')">Play again</button>'}},1000);
+ gameStop=()=>clearInterval(tm);newO()}
+function clawGame(box){
+ const P=['🧸','🐥','🎁','🚀','🦄','🪀'];let prizes=[],x=20,dir=1,y=40,ph='move',tries=6,sc=0,got=null;
+ box.innerHTML='<p class="muted">Press DROP when the claw is above a prize. You have 6 tries!</p><canvas id="cv" width="360" height="300"></canvas><div class="row" style="justify-content:center"><span class="pill" id="cs">Prizes: 0 • Tries left: 6</span><button class="btn" id="cd">⬇ DROP</button></div><div id="gmsg"></div>';
+ const c=$('#cv').getContext('2d');
+ for(let i=0;i<7;i++)prizes.push({x:25+i*50,e:P[Math.floor(Math.random()*P.length)],ok:true});
+ $('#cd').onclick=()=>{if(ph==='move')ph='drop'};
+ const iv=setInterval(()=>{
+  if(ph==='move'){x+=dir*3;if(x>340||x<20)dir*=-1}
+  else if(ph==='drop'){y+=6;if(y>=230){const p=prizes.find(p=>p.ok&&Math.abs(p.x-x)<22);if(p){p.ok=false;got=p.e}ph='rise'}}
+  else if(ph==='rise'){y-=6;if(y<=40){y=40;if(got){sc++;got=null}tries--;$('#cs').textContent='Prizes: '+sc+' • Tries left: '+tries;
+   if(tries>0)ph='move';else{ph='end';clearInterval(iv);const nb=setHS('claw',sc);$('#gmsg').innerHTML='<div class="msg ok">You grabbed '+sc+' prize(s)!'+(nb&&sc?' NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'claw\')">Play again</button>'}}}
+  c.clearRect(0,0,360,300);c.fillStyle='#2a3a9a';c.fillRect(0,38,360,3);c.fillRect(0,270,360,30);
+  c.font='30px serif';c.textAlign='center';prizes.forEach(p=>{if(p.ok)c.fillText(p.e,p.x,262)});
+  c.strokeStyle='#00d4ff';c.lineWidth=3;c.beginPath();c.moveTo(x,38);c.lineTo(x,y);c.stroke();c.beginPath();c.arc(x,y+6,13,0,Math.PI);c.stroke();
+  if(got)c.fillText(got,x,y+34)},30);
+ gameStop=()=>clearInterval(iv)}
+function raceGame(box){
+ box.innerHTML='<p class="muted">Steer with the ← → keys or the buttons. Dodge the cones! The longer you drive, the higher your score.</p><canvas id="cv" width="300" height="440"></canvas><div class="row" style="justify-content:center"><button class="btn alt" id="rl">⬅ Left</button><button class="btn alt" id="rr">Right ➡</button></div><div id="gmsg"></div>';
+ const c=$('#cv').getContext('2d');let lane=1,obs=[],sc=0,sp=0,v=160,over=false,last=performance.now(),raf,off=0;
+ const mv=d=>{lane=Math.max(0,Math.min(2,lane+d))};
+ const kd=e=>{if(e.key==='ArrowLeft'){e.preventDefault();mv(-1)}if(e.key==='ArrowRight'){e.preventDefault();mv(1)}};
+ document.addEventListener('keydown',kd);$('#rl').onclick=()=>mv(-1);$('#rr').onclick=()=>mv(1);
+ gameStop=()=>{over=true;cancelAnimationFrame(raf);document.removeEventListener('keydown',kd)};
+ function loop(now){if(over)return;const dt=Math.min((now-last)/1000,.05);last=now;sc+=dt*10;v+=dt*6;sp-=dt;off=(off+v*dt)%40;
+  if(sp<=0){obs.push({l:Math.floor(Math.random()*3),y:-40});sp=Math.max(.45,1.1-sc/150)}
+  obs.forEach(o=>o.y+=v*dt);obs=obs.filter(o=>o.y<470);
+  c.clearRect(0,0,300,440);c.fillStyle='#2a3a9a';for(let y=-40+off;y<440;y+=40){c.fillRect(99,y,3,20);c.fillRect(199,y,3,20)}
+  c.font='34px serif';c.textAlign='center';obs.forEach(o=>c.fillText('🚧',o.l*100+50,o.y+30));c.fillText('🏎️',lane*100+50,410);
+  c.fillStyle='#e8ecff';c.font='bold 18px sans-serif';c.textAlign='left';c.fillText('Score '+Math.floor(sc),10,24);
+  if(obs.some(o=>o.l===lane&&o.y>350&&o.y<410)){gameStop();const s=Math.floor(sc),nb=setHS('racing',s);$('#gmsg').innerHTML='<div class="msg bad">Crash! 🚧 Score: '+s+(nb?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'racing\')">Play again</button>';return}
+  raf=requestAnimationFrame(loop)}
+ raf=requestAnimationFrame(loop)}
+function bounceGame(box){
+ box.innerHTML='<p class="muted">Move your mouse, finger or ← → keys to bounce the ball and break all the bricks. You have 3 lives!</p><canvas id="cv" width="360" height="420"></canvas><div id="gmsg"></div>';
+ const cv=$('#cv'),c=cv.getContext('2d');let px=180,bx=180,by=300,vx=150,vy=-200,lives=3,sc=0,over=false,keys={},raf,last=performance.now();
+ const br=[];for(let r=0;r<4;r++)for(let k=0;k<7;k++)br.push({x:8+k*49,y:50+r*24,ok:true});
+ const mv=e=>{const r=cv.getBoundingClientRect();px=Math.max(40,Math.min(320,(e.clientX-r.left)*360/r.width))};
+ cv.addEventListener('pointermove',mv);cv.addEventListener('pointerdown',mv);
+ const kd=e=>{keys[e.key]=true;if(e.key.startsWith('Arrow'))e.preventDefault()},ku=e=>keys[e.key]=false;
+ document.addEventListener('keydown',kd);document.addEventListener('keyup',ku);
+ gameStop=()=>{over=true;cancelAnimationFrame(raf);document.removeEventListener('keydown',kd);document.removeEventListener('keyup',ku)};
+ function finish(win){gameStop();const nb=setHS('bounce',sc);$('#gmsg').innerHTML='<div class="msg '+(win?'ok':'bad')+'">'+(win?'🎉 You cleared every brick!':'Game over!')+' Bricks: '+sc+(nb&&sc?' – NEW BEST! 🏆':'')+'</div><button class="btn" onclick="startGame(\'bounce\')">Play again</button>'}
+ function loop(now){if(over)return;const dt=Math.min((now-last)/1000,.04);last=now;
+  if(keys.ArrowLeft)px=Math.max(40,px-320*dt);if(keys.ArrowRight)px=Math.min(320,px+320*dt);
+  bx+=vx*dt;by+=vy*dt;
+  if(bx<8||bx>352){vx=-vx;bx=Math.max(8,Math.min(352,bx))}if(by<8){vy=Math.abs(vy);by=8}
+  if(vy>0&&by>392&&by<408&&Math.abs(bx-px)<46){vy=-Math.abs(vy);vx=(bx-px)*5}
+  for(const b of br){if(b.ok&&bx>b.x&&bx<b.x+45&&by>b.y&&by<b.y+20){b.ok=false;sc++;vy=-vy;break}}
+  if(by>430){lives--;if(lives<=0){finish(false);return}bx=180;by=300;vx=150;vy=-200}
+  if(sc===br.length){finish(true);return}
+  c.clearRect(0,0,360,420);br.forEach((b,i)=>{if(b.ok){c.fillStyle=['#ff5c7a','#f5c542','#2ee59d','#00d4ff'][Math.floor(i/7)];c.fillRect(b.x,b.y,45,20)}});
+  c.fillStyle='#a855f7';c.fillRect(px-40,400,80,12);c.fillStyle='#e8ecff';c.beginPath();c.arc(bx,by,7,0,7);c.fill();
+  c.font='bold 16px sans-serif';c.textAlign='left';c.fillText('Bricks '+sc+'   ❤️ '+lives,10,24);
+  raf=requestAnimationFrame(loop)}
+ raf=requestAnimationFrame(loop)}
+
+/* ---------- TEACHER ---------- */
+function create(){
+ return `<h1>➕ Create a Quiz</h1><div class="card"><p class="muted">Demo: quizzes are saved only in this browser. Add one or more questions, then save.</p>
+ <label>Quiz title</label><input id="t-title" maxlength="60" placeholder="e.g. Fractions Fun">
+ <div class="two"><div><label>Subject</label><select id="t-subj">${SUBJ.map(s=>`<option>${s}</option>`).join('')}</select></div>
+ <div><label>Coins per correct answer (1–50)</label><input id="t-rew" type="number" min="1" max="50" value="5"></div></div>
+ <label>Time limit in minutes (optional, leave blank for none)</label><input id="t-time" type="number" min="1" max="120" placeholder="No limit">
+ <hr style="border-color:#2a3a9a"><h3>Question</h3><textarea id="t-q" rows="2" maxlength="200" placeholder="Type the question"></textarea>
+ <div class="two">${[0,1,2,3].map(k=>`<div><label>Option ${'ABCD'[k]}</label><input id="t-o${k}" maxlength="80"></div>`).join('')}</div>
+ <label>Correct answer</label><select id="t-ans"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+ <div id="t-err"></div><div id="t-draft"></div>
+ <button class="btn alt" onclick="addQ()">➕ Add question to quiz</button> <button class="btn" onclick="saveQuiz()">💾 Save quiz</button></div>`}
+function terr(m){$('#t-err').innerHTML=m?'<div class="msg bad">'+esc(m)+'</div>':''}
+function showDraft(){$('#t-draft').innerHTML=draft.length?'<h3>Questions in this quiz ('+draft.length+')</h3>'+draft.map((q,i)=>`<p>${i+1}. ${esc(q.q)} <button class="btn red" style="padding:4px 10px" onclick="draft.splice(${i},1);showDraft()">Remove</button></p>`).join(''):'<p class="muted">No questions added yet.</p>'}
+function addQ(){
+ const q=$('#t-q').value.trim(),o=[0,1,2,3].map(k=>$('#t-o'+k).value.trim());
+ if(q.length<5){terr('Please type a question (at least 5 characters).');return false}
+ if(o.some(x=>!x)){terr('Please fill in all four answer options.');return false}
+ if(new Set(o.map(x=>x.toLowerCase())).size<4){terr('Each answer option should be different.');return false}
+ draft.push({q,o,a:+$('#t-ans').value});
+ ['t-q','t-o0','t-o1','t-o2','t-o3'].forEach(id=>$('#'+id).value='');$('#t-ans').value='0';terr('');showDraft();toast('Question added ✅');return true}
+function saveQuiz(){
+ const title=$('#t-title').value.trim(),rew=Number($('#t-rew').value),tv=$('#t-time').value.trim();
+ if(title.length<3){terr('Please give the quiz a title (at least 3 characters).');return}
+ if(!Number.isInteger(rew)||rew<1||rew>50){terr('Coin reward must be a whole number from 1 to 50.');return}
+ let time=0;if(tv!==''){time=Number(tv);if(!Number.isInteger(time)||time<1||time>120){terr('Time limit must be a whole number from 1 to 120 minutes, or blank.');return}}
+ const started=['t-q','t-o0','t-o1','t-o2','t-o3'].some(id=>$('#'+id).value.trim());
+ if(started&&!addQ())return;
+ if(!draft.length){terr('Add at least one question before saving.');return}
+ S.custom.push({id:'c'+Date.now(),title,subject:$('#t-subj').value,reward:rew,time,qs:draft.slice(),custom:true});
+ draft=[];save();toast('Quiz saved! Students can play it from Quizzes (same browser only). 🎉');go('tquizzes')}
+function tquizzes(){
+ const rows=allQ();
+ return `<h1>📚 My Quizzes</h1><p class="muted">Sample quizzes plus quizzes created in this browser. Teacher view shows correct answers.</p>
+ <div class="grid">${rows.map(q=>`<div class="card"><div class="muted">${ICON[q.subject]} ${q.subject} ${q.custom?'• created by you':'• sample'}</div><h3>${esc(q.title)}</h3><p>${q.qs.length} question(s)</p><p>${qMeta(q)}</p>
+ <details><summary>View questions</summary>${q.qs.map((x,i)=>`<p><b>${i+1}. ${esc(x.q)}</b><br>${x.o.map((o,k)=>(k===x.a?'✅ ':'▫️ ')+esc(o)).join('<br>')}</p>`).join('')}</details>
+ ${q.custom?`<button class="btn red" onclick="delQuiz('${q.id}')">Delete</button>`:''}</div>`).join('')}</div>
+ ${S.custom.length?'':'<div class="empty" style="margin-top:16px">You have not created any quizzes yet. Use “Create Quiz” to make your first one! ✏️</div>'}`}
+function delQuiz(id){if(!confirm('Delete this quiz and its saved results?'))return;S.custom=S.custom.filter(q=>q.id!==id);delete S.results[id];save();draw();toast('Quiz deleted.')}
+function results(){
+ const list=allQ().filter(q=>S.results[q.id]);
+ return `<h1>🧾 Class Results (this browser only)</h1><p class="muted">Demo: shows the one demo student in this browser. Data is not secure and can be edited by anyone using this browser.</p>
+ ${list.length?list.map(q=>{const r=S.results[q.id];
+ return `<details><summary>${ICON[q.subject]} ${esc(q.title)} — ${r.score}/${r.total} • ${r.attempts} attempt(s)</summary><p class="muted">Last attempt: ${esc(r.date)} • Coins earned: ${r.coins}</p>
+ ${q.qs.map((x,i)=>{const a=r.answers[i]||{};return `<div class="card" style="margin:8px 0"><b>${i+1}. ${esc(x.q)}</b><br>Student answered: ${a.sel==null?'<i>(no answer)</i>':esc(x.o[a.sel])} ${a.ok?'✅':'❌'}<br><span class="muted">Correct: ${esc(x.o[x.a])}</span>
+ ${q.subject==='Mathematics'?`<br>✍️ Working: ${a.work?esc(a.work):'<i>(none written)</i>'}`:''}</div>`}).join('')}</details>`}).join('')
+ :'<div class="empty">No results yet. Switch to Student, finish a quiz, then come back here. 📭</div>'}`}
+function classView(){
+ return `<h1>🔑 Classroom Code</h1><div class="card" style="text-align:center"><div class="muted">Sample code</div><div class="code" id="cc">${CODE}</div><button class="btn" onclick="copyCode()">📋 Copy code</button>
+ <div class="msg bad" style="margin-top:16px">⚠️ Demo only: this code does NOT connect different computers. Nothing syncs online, and each browser keeps its own separate data.</div></div>`}
+function copyCode(){
+ const fb=()=>{const t=document.createElement('textarea');t.value=CODE;document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}t.remove();toast(ok?'Code copied! 📋':'Copy failed. Please select the code and copy it manually.',ok?'ok':'bad')};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(CODE).then(()=>toast('Code copied! 📋')).catch(fb);else fb()}
+
+render();
+</script>
+</body>
+</html>
